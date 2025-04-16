@@ -80,17 +80,15 @@ class DiophantineSystem:
         return bound
 
     def _compute_suitable_c0_b2_alpha(self, p=0.1):
-        print(f"Initial, c0: {self.c0}, alpha: {self.alpha}")
-        while self.lam >= 1:
+        while self.lam >= 1 or self.alpha >= 1:
             self.b2 += 1
             self.c0 = self._compute_c0()
             self.c1 = self._compute_c1()
             self.c2 = self._compute_c2()
             self.alpha = self._compute_alpha()
             self.lam = self._compute_lam()
-            print(f"lam: {self._RR(self.lam)}, c0: {self._RR(self.c0)}, "
-                  f"c1: {self._RR(self.c1)}, c2: {self._RR(self.c2)}, b2: {self.b2}")
-        print(f"c0: {self._RR(self.c0)}, b2: {self.b2}")
+        print(f"lam: {self._RR(self.lam)}, c0: {self._RR(self.c0)}, "
+              f"c1: {self._RR(self.c1)}, c2: {self._RR(self.c2)}, b2: {self.b2}, alpha: {self._RR(self.alpha)}")
 
     def _compute_lam(self):
         return self._RR(self.c2 * self.c0 * self._ais[0] * self.d2**self.k) / (self.c1 * (self.m + self.alpha))
