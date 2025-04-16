@@ -1,6 +1,6 @@
 class DiophantineSystem:
 
-    def __init__(self, f, d1, d2, prec=20, alpha1=0.5, n_greater_than=None):
+    def __init__(self, f, d1, d2, prec=100, alpha1=0.5, n_greater_than=None):
         self._RR = RealField(prec=prec)
         self.f = f
         self.d1 = d1
@@ -16,7 +16,7 @@ class DiophantineSystem:
             raise ValueError("The quantity a0*d2^k/d1 is equal to 1.")
         self._theta1, self._theta0 = self._compute_thetas()
         self.m = self._D.ceil()
-        self._alpha1 = abs(self.m - self._D)
+        self._alpha1 = self._compute_alpha1(alpha1)
         self.b2 = self._lower_bound_b2()
         self.c0 = self._compute_c0()
         self.c1 = self._compute_c1()
@@ -62,13 +62,13 @@ class DiophantineSystem:
 
     def _compute_c2(self):
         num = abs(self.d1) * self.c0
-        denom = self.b2**(self.k0) * (log(self.b2**self.k0) - log(self._theta1))
+        denom = self.b2**self.k0 * (log(self.b2**self.k0) - log(self._theta1))
         return 1 + num / denom
 
-    def _compute_alpha1(self):
+    def _compute_alpha1(self, alpha1):
         a1 = abs(self.m - self._D)
         if a1.is_zero():
-            return 0.5
+            return alpha1
         return a1
     def _compute_alpha(self):
         return self._alpha1 + self.c0 / self.b2**self.k0
@@ -88,8 +88,9 @@ class DiophantineSystem:
             self.c2 = self._compute_c2()
             self.alpha = self._compute_alpha()
             self.lam = self._compute_lam()
-            print(f"lam: {RR(self.lam)}, c0: {RR(self.c0)}")
-        print(f"c0: {self.c0}, b2: {self.b2}")
+            print(f"lam: {self._RR(self.lam)}, c0: {self._RR(self.c0)}, "
+                  f"c1: {self._RR(self.c1)}, c2: {self._RR(self.c2)}, b2: {self.b2}")
+        print(f"c0: {self._RR(self.c0)}, b2: {self.b2}")
 
     def _compute_lam(self):
         return self._RR(self.c2 * self.c0 * self._ais[0] * self.d2**self.k) / (self.c1 * (self.m + self.alpha))
